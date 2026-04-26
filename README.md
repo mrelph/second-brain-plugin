@@ -22,15 +22,26 @@ npm install -g github:mrelph/second-brain
 
 Verify with `second-brain --version` (should report 0.2.0 or later — the plugin uses the `--config` and `--print-schema` surface added in 0.2.0).
 
-## Installation (local development)
+## Installation
 
-```sh
-# Clone, then load inside a Claude Code session
-git clone https://github.com/mrelph/second-brain-plugin.git
-# In Claude Code:  /plugin install ./second-brain-plugin
+This repo is its own single-plugin marketplace. Install with two slash commands inside any Claude Code session:
+
+```
+/plugin marketplace add mrelph/second-brain-plugin
+/plugin install second-brain@second-brain-marketplace
 ```
 
-For marketplace publication, see Claude Code plugin documentation.
+Restart the session (or `/plugin reload`) to activate. Verify with `/plugin list` — `second-brain` should appear and the `second-brain-init` skill should fire on phrases like "set up a second-brain for X".
+
+### Local development
+
+```sh
+# Clone, then point the marketplace add at the local path
+git clone https://github.com/mrelph/second-brain-plugin.git
+# In Claude Code:
+#   /plugin marketplace add ./second-brain-plugin
+#   /plugin install second-brain@second-brain-marketplace
+```
 
 ## Usage
 

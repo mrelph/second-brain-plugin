@@ -1,0 +1,21 @@
+{
+  "name": "second-brain-marketplace",
+  "owner": {
+    "name": "mrelph"
+  },
+  "description": "Single-plugin marketplace for the second-brain Claude Code plugin.",
+  "version": "0.1.0",
+  "repository": "https://github.com/mrelph/second-brain-plugin",
+  "license": "MIT",
+  "plugins": [
+    {
+      "name": "second-brain",
+      "source": "./",
+      "description": "Conducts an interview or ingests existing material, then runs the second-brain CLI to scaffold a personal knowledge base your AI assistant can maintain.",
+      "version": "0.1.0",
+      "author": { "name": "mrelph" },
+      "keywords": ["knowledge-base", "wiki", "obsidian", "notes", "second-brain"],
+      "category": "productivity"
+    }
+  ]
+}
