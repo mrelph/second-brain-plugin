@@ -1,7 +1,7 @@
 ---
 name: second-brain-init
-description: This skill should be used when the user asks to "set up a second-brain", "create a knowledge base", "initialize second-brain", "build a personal wiki", "organize my notes into a wiki", or "start a second brain". Conducts a brief interview (or ingests an existing folder), writes a `.second-brain.json` config, and invokes the `second-brain` CLI to scaffold the project. Do NOT activate for "set up Obsidian", "create a new note", "make a wiki page", or queries about an *existing* knowledge base ("show me my notes", "what's in my second-brain").
-version: 0.1.0
+description: This skill should be used when the user asks to "set up a second-brain", "create a knowledge base", "initialize second-brain", "build a personal wiki", "organize my notes into a wiki", "start a second brain", "register my second-brain at <path>", "remember this vault", "track my second-brain", or "tell second-brain about [folder]". Conducts a brief interview, ingests an existing folder, OR registers an already-created vault — then invokes the `second-brain` CLI. Do NOT activate for "set up Obsidian", "create a new note", "make a wiki page", or queries about an *existing* registered vault that just needs to be opened ("show me my notes", "what's in my second-brain").
+version: 0.2.0
 ---
 
 # second-brain-init
@@ -35,14 +35,15 @@ Always run `second-brain init --print-schema` and parse the JSON output before d
 
 If `--print-schema` fails (older CLI version, non-JSON output, exit code != 0), fall back to the shapes in `references/example-configs.md` and warn the user that the CLI may be out of date — suggest `npm install -g github:mrelph/second-brain` to update before continuing.
 
-### 3. Choose mode: interview or ingest
+### 3. Choose mode: interview, ingest, or register-existing
 
-Branch based on context:
+Branch based on what's already on disk at the user's target path:
 
-- **Interview mode** (default): the user is starting fresh, no existing notes folder. Conduct the interview from `references/interview-script.md`.
-- **Ingest mode**: the user pointed at a folder of existing material (e.g. "set up a second-brain for the notes in `~/journal`"). Read 5-15 representative files, infer config fields from observed patterns, then **show the inferred config and ask the user to confirm or tweak**. Heuristics in `references/ingest-heuristics.md`.
+- **Register-existing mode**: the user pointed at a folder that already contains a `.second-brain.json`. Do NOT re-init — just register it. Run `second-brain vaults add <path>`. The CLI validates the config exists and adds the path to the per-machine registry. Confirm to the user, then skip to step 7. Triggered by phrases like "register my second-brain at /path", "remember this vault", "track this knowledge base".
+- **Ingest mode**: the user pointed at a folder of existing notes/material with NO `.second-brain.json`. Read 5-15 representative files, infer config fields from observed patterns, then **show the inferred config and ask the user to confirm or tweak**. Heuristics in `references/ingest-heuristics.md`. Continue to step 4.
+- **Interview mode** (default): the user is starting fresh, no existing folder named, or pointed at an empty/non-existent path. Conduct the interview from `references/interview-script.md`. Continue to step 4.
 
-When in doubt, default to interview. Mixing — e.g., ingesting for context but still asking 1-2 confirming questions — is fine.
+When in doubt, default to interview. Use Bash (`test -f <path>/.second-brain.json && echo exists`) to check for an existing config before assuming.
 
 ### 4. Construct the JSON config
 
@@ -79,13 +80,17 @@ If the CLI errors (e.g., target dir not empty), surface the error verbatim and a
 
 ### 7. Hand off to the user
 
-After successful init, summarize what was created (3-5 lines max), then point the user at three concrete next actions:
+After successful init or register, summarize what happened in 3-5 lines.
+
+For **init**: tell the user what was created, that the vault was auto-registered (`second-brain vaults` to see all registered vaults on this machine), and point them at three concrete next actions:
 
 1. Drop notes/PDFs/links into `sources/inbox/`.
 2. Open the folder in their AI assistant.
 3. Ask the assistant to "ingest my inbox" or "what do we know about [X]?".
 
 Mention that the assistant will read the generated `AGENTS.md` / `CLAUDE.md` for instructions, and that the user can edit the "Project Customizations" block in that file to add personal preferences. The contract has three preserved blocks — managed (CLI-owned, refreshed on `second-brain upgrade`), Project Customizations (user-owned), and Assistant Observations (assistant's working memory across sessions). Both user and assistant blocks survive upgrades.
+
+For **register-existing**: tell the user the vault is now in the registry. Suggest running `second-brain doctor --directory <path>` to verify everything is healthy. If they're going to keep working on this machine, they probably want to `cd` into the vault next so the assistant picks up `CLAUDE.md` / `AGENTS.md`.
 
 ## What this skill does NOT do
 
@@ -104,3 +109,4 @@ If the user asks to "set up AND ingest these files in one step", do the setup fi
 - **`references/interview-script.md`** — the question flow for interview mode, with field mappings and example user responses.
 - **`references/ingest-heuristics.md`** — how to infer config fields from a folder of existing material; what to read, what signals matter.
 - **`references/example-configs.md`** — sample `.second-brain.json` shapes for common domains (research, journal, recipes, engineering notes).
+- **`references/registry.md`** — what the vault registry is, where it lives, and the CLI commands for managing it.

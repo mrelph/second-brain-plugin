@@ -1,6 +1,6 @@
 {
   "name": "second-brain",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Conducts an interview or ingests existing material, then runs the second-brain CLI to scaffold a personal knowledge base your AI assistant can maintain.",
   "author": {
     "name": "Mark Relph"

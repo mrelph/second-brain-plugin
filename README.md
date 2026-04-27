@@ -53,13 +53,22 @@ In any Claude Code session, just describe what you want:
 >
 > "Build me a personal wiki for journal entries."
 
-The skill activates, conducts a 2-3 message interview, shows you the JSON config it would write, asks for confirmation, then invokes the CLI. After init, the generated `AGENTS.md` / `CLAUDE.md` takes over — the assistant maintains the wiki from there based on its instructions.
+The skill activates, conducts a 2-3 message interview, shows you the JSON config it would write, asks for confirmation, then invokes the CLI. After init, the generated `AGENTS.md` / `CLAUDE.md` takes over — the assistant maintains the wiki from there based on its instructions. The new vault is auto-registered in `~/.second-brain/vaults.json`.
 
-If you point at an existing folder, the skill switches to ingest mode:
+If you point at an existing folder of notes (no `.second-brain.json` yet), the skill switches to **ingest mode**:
 
 > "Set up a second-brain for the notes in `~/journal` — they're already there."
 
 It reads representative files, infers domain / entity types / link style from what's there, and presents a draft config for you to confirm or tweak.
+
+If you point at an existing **second-brain vault** (already has `.second-brain.json`), the skill switches to **register mode**:
+
+> "Register my second-brain at `~/notes/research`."
+> "Remember this knowledge base — it's at `/projects/team-wiki`."
+
+No re-init, no overwriting. Just adds the path to the per-machine registry. Useful on a new machine after syncing a vault folder, or when you want a tool to know about a vault someone else created on this machine.
+
+You can always see what's registered via `second-brain vaults` from the terminal, or ask in chat ("what second-brains do I have?").
 
 ## What it doesn't do
 
