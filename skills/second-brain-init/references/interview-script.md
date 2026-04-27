@@ -21,7 +21,7 @@ Do not ask about these unless the user volunteers a preference:
 - `categories`: `[]` (empty — built-in entities/concepts/topics are usually enough).
 - `wiki.frontmatter`: `true`.
 - `wiki.pageNaming`: `"title-case"`.
-- `sourceHandling.mode`: `"user-directed"`.
+- `sourceHandling.mode`: `"archive-after-ingest"` (CLI default — assistant moves processed sources from `inbox/` to `archive/`). If the user says they want to keep everything in inbox, set `"leave-in-inbox"` instead.
 - `schema.styleGuide`: leave undefined; `normalizeConfig` fills in a sensible default.
 - Git init: `true` unless the user says no.
 
