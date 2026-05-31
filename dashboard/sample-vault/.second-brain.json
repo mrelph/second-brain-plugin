@@ -1,0 +1,17 @@
+{
+  "projectName": "Work Brain (sample)",
+  "defaultAgent": "claude-code",
+  "categories": ["projects", "people", "orgs", "commitments", "activities", "themes", "research"],
+  "schema": {
+    "domain": "work projects, the people and organizations behind them, commitments, and the themes and research that inform them",
+    "entityTypes": ["projects", "people", "organizations", "commitments", "activities", "themes", "research"],
+    "commonQueries": [
+      "What's the status of [project]?",
+      "When did I last talk to [person]?",
+      "What commitments are due this week?"
+    ],
+    "styleGuide": "Terse. Link people and orgs liberally. Date every activity."
+  },
+  "wiki": { "linkStyle": "wikilinks", "frontmatter": true, "pageNaming": "title-case" },
+  "sourceHandling": { "mode": "leave-in-inbox" }
+}
