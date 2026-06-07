@@ -1,26 +1,12 @@
 # second-brain (Claude Code plugin)
 
-A Claude Code plugin that turns "set up a second-brain for X" into a working knowledge base.
-
-When activated, the bundled `second-brain-init` skill conducts a brief interview (or ingests an existing folder of notes), drafts a `.second-brain.json` config, and runs the [`second-brain` CLI](https://github.com/mrelph/second-brain) to scaffold the project structure and the assistant instruction file.
+A self-contained Claude Code plugin that designs and generates a personal knowledge-base vault from a single conversation — no external tools required.
 
 ## What this plugin is
 
-A conversational front-end for the `second-brain` CLI. The CLI does the actual scaffolding and owns the prose template that governs how the assistant maintains the wiki. This plugin owns the *interview/ingest* step — the part that's better as a conversation with Claude than as a wizard or a stack of `--flag` arguments.
+When activated, the bundled `second-brain-init` skill conducts a brief interview (or ingests an existing folder of notes), drafts a vault design, then **generates the entire vault directly** using the Write tool: folder structure, README, assistant contract, page templates, and domain-flavored seed pages.
 
-## Prerequisites
-
-The `second-brain` CLI must be installed and on `PATH`. The plugin checks for it at the start of the workflow and stops with install instructions if it's missing.
-
-```sh
-# Install via npm (requires Node ≥ 20.10)
-npm install -g github:mrelph/second-brain
-
-# Or download a prebuilt binary
-# https://github.com/mrelph/second-brain/releases
-```
-
-Verify with `second-brain --version` (should report 0.2.0 or later — the plugin uses the `--config` and `--print-schema` surface added in 0.2.0).
+There is nothing to install separately. The skill is the scaffolder. Claude Code is the only runtime needed.
 
 ## Installation
 
@@ -53,40 +39,77 @@ In any Claude Code session, just describe what you want:
 >
 > "Build me a personal wiki for journal entries."
 
-The skill activates, conducts a 2-3 message interview, shows you the JSON config it would write, asks for confirmation, then invokes the CLI. After init, the generated `AGENTS.md` / `CLAUDE.md` takes over — the assistant maintains the wiki from there based on its instructions. The new vault is auto-registered in `~/.second-brain/vaults.json`.
+The skill activates and runs an **adaptive walkthrough** — a 2-3 message interview that surfaces domain, folder preferences, entity types, and linking style. Once the design is ready it shows you a summary and asks for confirmation before writing anything. After generation, the `AGENTS.md` / `CLAUDE.md` pair that was written into the vault governs all ongoing maintenance.
 
-If you point at an existing folder of notes (no `.second-brain.json` yet), the skill switches to **ingest mode**:
+**Ingest mode** — if you point at an existing folder of notes (no `.second-brain.json` yet), the skill switches to ingest mode:
 
 > "Set up a second-brain for the notes in `~/journal` — they're already there."
 
-It reads representative files, infers domain / entity types / link style from what's there, and presents a draft config for you to confirm or tweak.
+It reads representative files, infers domain / entity types / link style from what's there, presents a draft design for you to confirm or tweak, then generates the vault structure around your existing content.
 
-If you point at an existing **second-brain vault** (already has `.second-brain.json`), the skill switches to **register mode**:
+## Vault structure
 
-> "Register my second-brain at `~/notes/research`."
-> "Remember this knowledge base — it's at `/projects/team-wiki`."
+Every generated vault follows this canonical layout:
 
-No re-init, no overwriting. Just adds the path to the per-machine registry. Useful on a new machine after syncing a vault folder, or when you want a tool to know about a vault someone else created on this machine.
+```
+<vault>/
+├── .second-brain.json        # design record
+├── README.md                 # what this is, the folder taxonomy, how to use it
+├── AGENTS.md                 # the assistant contract (canonical, 3-block)
+├── CLAUDE.md                 # imports @AGENTS.md so Claude Code picks it up
+├── 01 - Steering/            # guiding docs — vision, principles, scope
+├── 02 - Research/
+├── 03 - Meeting Notes/
+├── 04 - Projects/
+├── 05 - Big Ideas/
+├── 06 - People/
+├── wiki/                     # distilled, interlinked permanent notes
+│   ├── entities/
+│   ├── concepts/
+│   └── topics/
+├── sources/
+│   ├── inbox/                # drop raw material here
+│   └── archive/              # processed material
+└── templates/                # page templates the assistant copies
+```
 
-You can always see what's registered via `second-brain vaults` from the terminal, or ask in chat ("what second-brains do I have?").
+### Hybrid taxonomy
+
+The vault uses a **hybrid taxonomy** that separates active work from distilled knowledge:
+
+- **Numbered areas (01–06):** working material — steering docs, research in progress, meeting notes, project files, big ideas, and people profiles. These are activity-oriented and change frequently.
+- **`wiki/`:** distilled, interlinked permanent notes — the knowledge graph. Pages here are stable, cross-linked summaries that survive the activity they were born from. Organised by entities, concepts, and topics.
+
+The split keeps day-to-day work from cluttering the permanent knowledge store, while making it easy to "graduate" a research note or meeting outcome into the wiki once it's settled.
+
+### The 3-block assistant contract
+
+`AGENTS.md` (imported by `CLAUDE.md`) contains three blocks that govern how the AI maintains the vault:
+
+1. **Managed** — non-negotiable rules the assistant always follows (naming conventions, link style, vault root boundary).
+2. **Project Customizations** — domain-specific rules generated during the interview (entity types, tagging taxonomy, source handling).
+3. **Assistant Observations** — a running scratchpad where the assistant records patterns, open questions, and maintenance notes as it works.
+
+This contract is the source of truth for vault maintenance. It lives in the vault, travels with it, and can be edited directly.
 
 ## What it doesn't do
 
-- **Maintain the wiki.** That's the assistant's ongoing job after `init` runs, governed by the instruction file the CLI writes.
-- **Run `upgrade` or `doctor`.** Those are CLI commands the assistant invokes via Bash directly when you ask for them — no skill needed.
-- **Ingest source material into pages during setup.** First content comes from the user's sources after init.
+- **Maintain the wiki.** That is the assistant's ongoing job after the vault is generated, governed by `AGENTS.md`.
+- **Re-init an existing vault.** If `.second-brain.json` already exists in the target folder the skill stops rather than overwriting your work.
+- **Ingest source material into pages during setup.** First content comes from your sources after the vault is live.
 
 ## Architecture
 
 ```
-┌──────────────────────┐      ┌─────────────────────┐      ┌──────────────────────┐
-│  This plugin         │      │  second-brain CLI   │      │  Generated project   │
-│  (interview/ingest)  ├─────▶│  init --config      ├─────▶│  AGENTS.md / etc.    │
-└──────────────────────┘      └─────────────────────┘      └──────────────────────┘
-       writes JSON                  scaffolds files            assistant takes over
+┌──────────────────────────┐           ┌──────────────────────────┐
+│  second-brain-init skill │           │  Generated vault          │
+│  (interview / ingest /   │──writes──▶│  AGENTS.md governs        │
+│   design / confirm gate) │           │  all future maintenance   │
+└──────────────────────────┘           └──────────────────────────┘
+         Claude Code                         Write tool only
 ```
 
-Single source of truth for the prose template lives in the CLI. This plugin only writes the JSON.
+The plugin owns the design conversation and the initial generation. No external process, no intermediate config layer — just Claude Code reading and writing files.
 
 ## License
 
