@@ -118,7 +118,7 @@ Sample `.second-brain.json` shapes for common domains. Use as references for the
 }
 ```
 
-`normalizeConfig` fills in defaults for everything else. Better to ship a thin config than to invent entity types and queries the user didn't agree to.
+The skill applies the documented silent defaults for everything else (see `interview-script.md` → "Defaults to use silently"). Better to ship a thin config than to invent entity types and queries the user didn't agree to.
 
 ## Patterns to notice
 

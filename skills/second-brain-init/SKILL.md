@@ -101,11 +101,11 @@ Required fields:
 
 - `projectName` — human-readable name; appears in headings.
 - `defaultAgent` — default to `"claude-code"` unless the user names a different assistant.
-- `formatVersion` — always `"1"`.
+- `formatVersion` — always the integer `1` (not a string).
 - `schema.domain` — the one-line domain description.
 - `schema.entityTypes` — array of recurring page kinds.
 - `schema.commonQueries` — array of sample questions the wiki should answer well.
-- `categories.activityAreas` — array of `{ "number": N, "name": "..." }` objects for the six activity folders.
+- `categories.activityAreas` — flat array of folder-name strings including the `NN - ` prefix, e.g. `["01 - Steering", "02 - Research", ...]` (the six activity folders, tailored per the user's choices).
 - `categories.wikiCategories` — default to `["entities", "concepts", "topics"]`.
 - `wiki.linkStyle` — `"wikilinks"` or `"markdown"`.
 - `sourceHandling.mode` — `"archive-after-ingest"` or `"leave-in-inbox"`.

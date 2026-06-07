@@ -24,7 +24,7 @@ These are asked as natural conversation, not structured choice cards.
 | 2 | "In one line, what is this knowledge base about?" | `schema.domain` | Push once for specifics. "Research" is bad; "AI alignment papers and the arguments they make" is good. |
 | 3 | "What kinds of things will pages usually be about? (e.g. papers, authors, methods — or skip if you're not sure)" | `schema.entityTypes` | Comma-separated. 3-6 items typical. Optional — if the user shrugs, skip. |
 | 4 | "What's a question you'd want this to answer well?" | `schema.commonQueries` | One or two examples is plenty. Use [placeholder] syntax in examples, e.g. "What has [author] said about [concept]?". Optional. |
-| 5 | "Any notes on writing style or how pages should read? (e.g. 'terse bullet points', 'narrative prose', 'formal citations')" | `schema.styleGuide` | Optional. Leave undefined if the user skips — a sensible default is applied. |
+| 5 | "Any notes on writing style or how pages should read? (e.g. 'terse bullet points', 'narrative prose', 'formal citations')" | `schema.styleGuide` | Optional. If the user skips, set the default: `"Concise and concrete. Cite or link sources. Mark synthesis vs. sourced facts."` |
 
 Batch questions 1-2 in the first message, then 3-5 together (or split if the conversation warrants it).
 

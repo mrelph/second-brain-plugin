@@ -83,7 +83,7 @@ At generation time, substitute each `{{placeholder}}` using the values already c
 | `{{projectName}}` | `projectName` | Appears in the `# Heading`. |
 | `{{domain, in the user's words}}` | `schema.domain` | A full sentence describing what the KB is about. |
 | `{{pageNaming}}` | `wiki.pageNaming` | One of `title-case`, `kebab-case`, or `sentence-case`. |
-| `{{styleGuide}}` | `schema.styleGuide` | The user's concise writing rules for the assistant. |
+| `{{styleGuide}}` | `schema.styleGuide` | The user's concise writing rules for the assistant. If `schema.styleGuide` is absent, fall back to: `Concise and concrete. Cite or link sources. Mark synthesis vs. sourced facts.` (never leave the section empty or emit a literal placeholder). |
 
 Conditional substitutions:
 
