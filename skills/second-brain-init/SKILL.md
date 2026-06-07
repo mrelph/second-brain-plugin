@@ -9,8 +9,7 @@ description: >
   Do NOT activate for: "set up Obsidian", "create a new note", "make a wiki page", queries
   about an existing vault that just needs opening ("show me my notes", "what's in my second-brain",
   "open my knowledge base"), or any request that is purely about maintaining or querying an
-  already-initialized vault. Do NOT activate for "register my vault", "add vault to registry",
-  or "remember this vault" — there is no register mode. Do NOT mention or invoke any external CLI.
+  already-initialized vault.
 version: 1.0.0
 ---
 
@@ -39,7 +38,6 @@ Be deliberate about scope. This skill handles **initial setup only**. After the 
 - Maintain the wiki — that is the assistant's ongoing job, governed by the generated contract.
 - Re-initialize an existing vault — if `.second-brain.json` already exists at the target, there is no re-init mode.
 - Pre-populate `wiki/` with content. Setup scaffolds a single example seed page; real content comes from the user's sources after setup.
-- Register the vault in any external registry — there is no registry or CLI.
 
 If the user asks to "set up AND ingest these files in one step", complete setup first, then suggest "now ingest my inbox" as a follow-up — the assistant handles that via the contract, not via this skill.
 
