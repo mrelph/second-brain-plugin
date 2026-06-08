@@ -10,7 +10,7 @@ description: >
   about an existing vault that just needs opening ("show me my notes", "what's in my second-brain",
   "open my knowledge base"), or any request that is purely about maintaining or querying an
   already-initialized vault.
-version: 1.1.0
+version: 1.2.0
 ---
 
 # second-brain-init
@@ -49,7 +49,25 @@ Follow this sequence end-to-end.
 
 ### 1. Pre-flight: resolve the target location
 
-Default `<target>` to the current working directory if the user did not specify one.
+**Checkpoint A — prompt for a location when none was given.**
+
+If the user named a target path (e.g. "set up a second-brain in `~/notes/research`"), use it. If they did **not** specify one, do not silently assume the current directory — stop and ask where to create the vault, using an `AskUserQuestion` card with these options:
+
+- **Here** — the current working directory (show its actual path) — the default.
+- **A new subfolder here** — `<cwd>/<project-name-slug>` (slug derived from the project name once known, or ask for a folder name).
+- The user can always type a custom path via "Other".
+
+Resolve the chosen path to an absolute `<target>` before continuing.
+
+**Checkpoint B — detect a not-yet-existing folder.**
+
+Once `<target>` is resolved, check whether it already exists on disk:
+
+```bash
+test -d <target> && echo dir-exists || echo dir-new
+```
+
+If it prints `dir-new`, record that the vault folder will be **newly created**. Do not create it now — this is surfaced for explicit confirmation at the confirm gate (step 5).
 
 **Check for an existing vault:**
 
@@ -118,9 +136,10 @@ Required fields:
 
 Before writing any files, present to the user:
 
-1. The full `.second-brain.json` as a formatted code block.
-2. The complete folder tree that will be created.
-3. The list of every file that will be written.
+1. **The target location** — the absolute `<target>` path. If it was flagged `dir-new` in step 1 (Checkpoint B), state explicitly: **"This will create a new folder at `<target>`."** If it already exists, just confirm the path.
+2. The full `.second-brain.json` as a formatted code block.
+3. The complete folder tree that will be created.
+4. The list of every file that will be written.
 
 Also list the skills that will be created under `.claude/skills/` — the five baseline skills plus any approved tailored skills — each with its trigger phrase and output location. This gate covers the skills too.
 
