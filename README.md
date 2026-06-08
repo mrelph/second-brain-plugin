@@ -6,6 +6,8 @@ A self-contained Claude Code plugin that designs and generates a personal knowle
 
 When activated, the bundled `second-brain-init` skill conducts a brief interview (or ingests an existing folder of notes), drafts a vault design, then **generates the entire vault directly** using the Write tool: folder structure, README, assistant contract, page templates, and domain-flavored seed pages.
 
+As part of setup, the skill also runs a short **workflow-mapping interview** — a few targeted questions about how you actually plan to use the vault day-to-day (capture habits, review cadence, how you process sources, etc.). Based on your answers it generates a set of **Claude Code skills written directly into `<vault>/.claude/skills/`**. These skills handle the ongoing work of maintaining the vault: ingesting inbox items, running weekly reviews, answering recall questions, and more.
+
 There is nothing to install separately. The skill is the scaffolder. Claude Code is the only runtime needed.
 
 ## Installation
@@ -39,7 +41,9 @@ In any Claude Code session, just describe what you want:
 >
 > "Build me a personal wiki for journal entries."
 
-The skill activates and runs an **adaptive walkthrough** — a 2-3 message interview that surfaces domain, folder preferences, entity types, and linking style. Once the design is ready it shows you a summary and asks for confirmation before writing anything. After generation, the `AGENTS.md` / `CLAUDE.md` pair that was written into the vault governs all ongoing maintenance.
+The skill activates and runs an **adaptive walkthrough** — a 2-3 message interview that surfaces domain, folder preferences, entity types, and linking style. Once the design is ready it shows you a summary and asks for confirmation before writing anything.
+
+After the vault design is confirmed, a second short interview maps your workflow habits (how you capture, process, and review material). This drives the generation of vault-specific skills in `.claude/skills/`. After generation, the `AGENTS.md` / `CLAUDE.md` pair that was written into the vault governs all ongoing maintenance, and the skills handle day-to-day vault work.
 
 **Ingest mode** — if you point at an existing folder of notes (no `.second-brain.json` yet), the skill switches to ingest mode:
 
@@ -57,6 +61,13 @@ Every generated vault follows this canonical layout:
 ├── README.md                 # what this is, the folder taxonomy, how to use it
 ├── AGENTS.md                 # the assistant contract (canonical, 3-block)
 ├── CLAUDE.md                 # imports @AGENTS.md so Claude Code picks it up
+├── .claude/
+│   └── skills/               # generated vault skills (see below)
+│       ├── vault-doctor/
+│       ├── update-index/
+│       ├── ingest-inbox/
+│       ├── weekly-review/
+│       └── recall/
 ├── 01 - Steering/            # guiding docs — vision, principles, scope
 ├── 02 - Research/
 ├── 03 - Meeting Notes/
@@ -92,11 +103,26 @@ The split keeps day-to-day work from cluttering the permanent knowledge store, w
 
 This contract is the source of truth for vault maintenance. It lives in the vault, travels with it, and can be edited directly.
 
+## Skills your vault ships with
+
+Every generated vault includes five baseline skills in `.claude/skills/`. Open the vault folder in Claude Code and invoke them by simply asking — for example, "ingest my inbox" or "run a weekly review." The skills read and write files via Claude Code; they do not run inside Obsidian or any other app.
+
+| Skill | What it does |
+|---|---|
+| **vault-doctor** | Find broken/orphaned links, inconsistent frontmatter, and empty stubs; offer targeted fixes. |
+| **update-index** | Maintain Map-of-Content and index pages for each area and wiki category, keeping navigation current. |
+| **ingest-inbox** | Process items in `sources/inbox/`: file each one into the right area, distil key ideas into linked wiki pages, then archive the source. |
+| **weekly-review** | Summarise recent activity, surface stale items and open loops, and prompt a short reflection. |
+| **recall** | Answer "what do we know about X?" with cited references drawn from across the vault. |
+
+If the workflow interview reveals domain-specific habits (e.g. a particular capture or publication workflow), additional tailored skills may be generated alongside these five. All skills are plain files in `.claude/skills/` — you can read, edit, or extend them at any time.
+
 ## What it doesn't do
 
-- **Maintain the wiki.** That is the assistant's ongoing job after the vault is generated, governed by `AGENTS.md`.
+- **Run inside Obsidian.** The plugin operates entirely through Claude Code. The assistant maintains the vault via the generated skills and the `AGENTS.md` contract; no Obsidian plugin or external process is involved.
+- **Maintain the wiki automatically.** Ongoing maintenance is driven by you invoking the vault skills (or asking the assistant directly). The skills and contract govern how that work is done.
 - **Re-init an existing vault.** If `.second-brain.json` already exists in the target folder the skill stops rather than overwriting your work.
-- **Ingest source material into pages during setup.** First content comes from your sources after the vault is live.
+- **Ingest source material into pages during setup.** First content comes from your sources after the vault is live — use the `ingest-inbox` skill once material has been dropped into `sources/inbox/`.
 
 ## Architecture
 
