@@ -4,7 +4,7 @@
     "name": "mrelph"
   },
   "description": "Single-plugin marketplace for the second-brain Claude Code plugin.",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "repository": "https://github.com/mrelph/second-brain-plugin",
   "license": "MIT",
   "plugins": [
@@ -12,7 +12,7 @@
       "name": "second-brain",
       "source": "./",
       "description": "Set up a second-brain via a workflow interview or by ingesting existing notes. Self-contained — creates the full vault structure plus a baseline set of vault-maintenance and usage skills in .claude/skills/.",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "author": { "name": "mrelph" },
       "keywords": ["knowledge-base", "wiki", "obsidian", "notes", "second-brain"],
       "category": "productivity"

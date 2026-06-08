@@ -1,6 +1,6 @@
 {
   "name": "second-brain",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Interviews you about your workflow, then creates a tailored knowledge-base vault AND stands up Claude Code skills to maintain and use it — folders, README, schema, templates, an AI maintenance contract, and ready-to-run skills, directly in your workspace.",
   "author": {
     "name": "Mark Relph"
