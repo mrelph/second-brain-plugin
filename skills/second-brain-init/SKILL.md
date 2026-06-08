@@ -10,7 +10,7 @@ description: >
   about an existing vault that just needs opening ("show me my notes", "what's in my second-brain",
   "open my knowledge base"), or any request that is purely about maintaining or querying an
   already-initialized vault.
-version: 1.0.0
+version: 1.1.0
 ---
 
 # second-brain-init
@@ -91,6 +91,8 @@ The interview is **adaptive**: use structured AskUserQuestion cards for real tra
 
 Skip fields the user volunteers unprompted. Don't ask about fields with sensible defaults unless the user raises them (`wiki.frontmatter`, `wiki.pageNaming`, `schema.styleGuide`).
 
+After the structure questions, run the **usage thread** (`references/workflow-interview.md`) to capture how the user will use the vault and surface tailored-skill candidates. On the fast path, skip the usage thread and generate baseline skills only.
+
 **Fast path:** if the user provides all key details up front (name, domain, entity types, link style), skip the structured interview and move directly to config construction.
 
 ### 4. Construct the config
@@ -118,6 +120,8 @@ Before writing any files, present to the user:
 2. The complete folder tree that will be created.
 3. The list of every file that will be written.
 
+Also list the skills that will be created under `.claude/skills/` — the five baseline skills plus any approved tailored skills — each with its trigger phrase and output location. This gate covers the skills too.
+
 State clearly: **"This is the last reversible point. Shall I proceed and create the vault?"**
 
 Do not write any files until the user explicitly confirms. If they request changes, revise the config and re-present the confirm gate.
@@ -138,6 +142,8 @@ Write files in this exact order:
 
 **Ingest mode note:** never overwrite an existing file. If a file already exists at a target path, skip it and note which files were skipped in the hand-off summary.
 
+8. **Skills (`.claude/skills/`)** — then write the skills into `<vault>/.claude/skills/`: for each baseline skill, copy its template from `references/skill-library/<name>.md`, substituting only `{{projectName}}` and `{{domain}}`; for each approved tailored skill, author it to the fixed shape. Follow `references/skill-generation.md`. Record every generated skill in `.second-brain.json` under `skills`, and write `usageProfile`. Never overwrite an existing skill file without confirmation.
+
 After writing files, offer to run `git init` in the target directory (default: yes). If the user agrees, run it via Bash.
 
 ### 7. Hand off
@@ -149,6 +155,8 @@ Then give the user three concrete next actions:
 1. Drop your notes, PDFs, and links into `sources/inbox/`.
 2. Open the vault folder in your AI assistant (so it picks up `CLAUDE.md` → `AGENTS.md`).
 3. Ask the assistant: "ingest my inbox" or "what do we know about [X]?" — the assistant contract now governs all ongoing maintenance.
+
+Tell the user the vault ships with skills in `.claude/skills/` and how to invoke them (e.g. "ingest my inbox", "what do we know about [X]?", "weekly review"). The contract's Available skills section lists them.
 
 Remind the user that `AGENTS.md` / `CLAUDE.md` defines how the assistant maintains the vault going forward, and that they can freely edit the **Project Customizations** block in `AGENTS.md` to add personal preferences, domain rules, or style notes. Both the Project Customizations block and the Assistant Observations block are user-and-assistant-owned and are never overwritten.
 
@@ -164,3 +172,6 @@ Remind the user that `AGENTS.md` / `CLAUDE.md` defines how the assistant maintai
 - **`references/interview-script.md`** — the adaptive interview walkthrough for fresh setup: question flow, field mappings, and example user responses.
 - **`references/ingest-heuristics.md`** — how to infer a config from an existing folder of notes: what to read, what signals matter, how to handle ambiguous structure.
 - **`references/example-configs.md`** — sample `.second-brain.json` configs in the current schema shape for common domains (research, journal, recipes, engineering notes).
+- **`references/workflow-interview.md`** — the usage thread: questions that capture how the user will interact with the vault day-to-day, and surface candidates for tailored skills.
+- **`references/skill-generation.md`** — rules for authoring baseline and tailored skills: the fixed shape every skill must follow, substitution variables, and quality checks.
+- **`references/skill-library/`** — the five baseline skill templates (`vault-doctor`, `update-index`, `ingest-inbox`, `weekly-review`, `recall`) ready to copy and substitute.
