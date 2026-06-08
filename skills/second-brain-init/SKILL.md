@@ -111,6 +111,8 @@ Required fields:
 - `categories.wikiCategories` — default to `["entities", "concepts", "topics"]`.
 - `wiki.linkStyle` — `"wikilinks"` or `"markdown"`.
 - `sourceHandling.mode` — `"archive-after-ingest"` or `"leave-in-inbox"`.
+- `skills` — array of `{ name, kind, description }` for the five baseline skills plus any approved tailored skills (the same list shown at the confirm gate). Build this into the config now so the contract's "Available skills" section renders correctly when `AGENTS.md` is written.
+- `usageProfile` — `{ regularActivities, aiResponsibilities, tailoredSkills }` from the usage thread. Omit on the fast path.
 
 ### 5. Confirm gate
 
@@ -142,7 +144,7 @@ Write files in this exact order:
 
 **Ingest mode note:** never overwrite an existing file. If a file already exists at a target path, skip it and note which files were skipped in the hand-off summary.
 
-8. **Skills (`.claude/skills/`)** — then write the skills into `<vault>/.claude/skills/`: for each baseline skill, copy its template from `references/skill-library/<name>.md`, substituting only `{{projectName}}` and `{{domain}}`; for each approved tailored skill, author it to the fixed shape. Follow `references/skill-generation.md`. Record every generated skill in `.second-brain.json` under `skills`, and write `usageProfile`. Never overwrite an existing skill file without confirmation.
+8. **Skills (`.claude/skills/`)** — then write the skills into `<vault>/.claude/skills/`: for each baseline skill, copy its template from `references/skill-library/<name>.md`, substituting only `{{projectName}}` and `{{domain}}`; for each approved tailored skill, author it to the fixed shape. Follow `references/skill-generation.md`. The `skills` and `usageProfile` records were already written into `.second-brain.json` at sub-step 1 (so `AGENTS.md`'s `{{skillsList}}` rendered correctly); only update the config here if an approved skill was renamed or added during generation. Never overwrite an existing skill file without confirmation.
 
 After writing files, offer to run `git init` in the target directory (default: yes). If the user agrees, run it via Bash.
 
