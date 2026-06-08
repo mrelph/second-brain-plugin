@@ -25,8 +25,9 @@ These are asked as natural conversation, not structured choice cards.
 | 3 | "What kinds of things will pages usually be about? (e.g. papers, authors, methods — or skip if you're not sure)" | `schema.entityTypes` | Comma-separated. 3-6 items typical. Optional — if the user shrugs, skip. |
 | 4 | "What's a question you'd want this to answer well?" | `schema.commonQueries` | One or two examples is plenty. Use [placeholder] syntax in examples, e.g. "What has [author] said about [concept]?". Optional. |
 | 5 | "Any notes on writing style or how pages should read? (e.g. 'terse bullet points', 'narrative prose', 'formal citations')" | `schema.styleGuide` | Optional. If the user skips, set the default: `"Concise and concrete. Cite or link sources. Mark synthesis vs. sourced facts."` |
+| 6 | "When you capture something — say, a meeting note or a reference — where should it live, and does it become a permanent `wiki/` page or stay in an activity area?" | routing intent | Elicits the inbox → area → wiki routing that the maintenance/ingest skills rely on. Optional — accept a rough answer. |
 
-Batch questions 1-2 in the first message, then 3-5 together (or split if the conversation warrants it).
+Batch questions 1-2 in the first message, then 3-6 together (or split if the conversation warrants it).
 
 ---
 
@@ -178,3 +179,7 @@ Brief and conversational, not survey-like. After 2-3 questions, summarize what h
 > ```
 >
 > Happy with this, or anything to adjust?
+
+---
+
+After the structure thread, run the **usage thread** in `references/workflow-interview.md` to map how the user will use the vault and which skills to stand up.
