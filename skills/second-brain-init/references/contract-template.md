@@ -34,6 +34,10 @@ Generate this file verbatim, substituting placeholders as described in [Placehol
 ## Linking discipline
 Link liberally. A link to a page that does not exist yet is a valid TODO marker — it records something worth writing later.
 
+## Available skills
+This vault ships with Claude Code skills in `.claude/skills/`. Use them when relevant:
+{{skillsList}}
+
 ## Style guide
 {{styleGuide}}
 
@@ -84,6 +88,7 @@ At generation time, substitute each `{{placeholder}}` using the values already c
 | `{{domain, in the user's words}}` | `schema.domain` | A full sentence describing what the KB is about. |
 | `{{pageNaming}}` | `wiki.pageNaming` | One of `title-case`, `kebab-case`, or `sentence-case`. |
 | `{{styleGuide}}` | `schema.styleGuide` | The user's concise writing rules for the assistant. If `schema.styleGuide` is absent, fall back to: `Concise and concrete. Cite or link sources. Mark synthesis vs. sourced facts.` (never leave the section empty or emit a literal placeholder). |
+| `{{skillsList}}` | `skills` | A markdown bullet per generated skill: `- **<name>** — <description>`. If `skills` is empty/absent, write `- (none generated — run setup again to add skills)`. |
 
 Conditional substitutions:
 
